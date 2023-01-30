@@ -17,13 +17,13 @@ module.exports = (session) => {
         const stockChangeData = await getProfitAndLoss();
 
         // If stockChangeData matches archivedStockChangeData, do nothing
-        // if (
-        //   session.archivedStockChangeData &&
-        //   JSON.stringify(session.archivedStockChangeData) ===
-        //     JSON.stringify(stockChangeData)
-        // ) {
-        //   return;
-        // }
+        if (
+          session.archivedStockChangeData &&
+          JSON.stringify(session.archivedStockChangeData) ===
+            JSON.stringify(stockChangeData)
+        ) {
+          return;
+        }
 
         if (session.archivedStockChangeData) {
           sendStockChangeMessageToSlack({
