@@ -1,0 +1,32 @@
+const express = require("express"),
+  router = express.Router();
+
+const { xero, getAccessToken } = require("../../controllers/xero");
+
+router.get("/", async (req, res) => {
+  // Show a welcome message
+  res.send("Nothing to see here");
+});
+
+/**
+ * When accessing the route of the API, we'll redirect the user to the consentUrl
+ * to authorize the app.
+ */
+router.get(`/${process.env.XERO_TENANT_ID}`, async (req, res) => {
+  let consentUrl = await xero.buildConsentUrl();
+
+  res.redirect(consentUrl);
+});
+
+/**
+ *
+ */
+router.get("/xero/callback", async (req, res) => {
+  await xero.initialize();
+
+  await getAccessToken(req, res);
+
+  res.send();
+});
+
+module.exports = router;
