@@ -1,7 +1,7 @@
 module.exports = (session) => {
   const cron = require("node-cron");
 
-  const { getProfitAndLoss } = require("./xero");
+  const { getProfitAndLoss, xero } = require("./xero");
 
   const { sendStockChangeMessageToSlack } = require("./slack");
 
@@ -14,6 +14,10 @@ module.exports = (session) => {
     const task = cron.schedule(
       runTime,
       async () => {
+        if (session.tokenSet.expired()) {
+          await xero.refreshToken();
+        }
+
         const stockChangeData = await getProfitAndLoss();
 
         // If stockChangeData matches archivedStockChangeData, do nothing
