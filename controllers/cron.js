@@ -1,3 +1,5 @@
+const { calculateStockPrice } = require("../utils");
+
 module.exports = (session) => {
   const cron = require("node-cron");
 
@@ -30,8 +32,14 @@ module.exports = (session) => {
         // If stockChangeData matches archivedStockChangeData, do nothing
         if (
           session.archivedStockChangeData &&
-          JSON.stringify(session.archivedStockChangeData) ===
-            JSON.stringify(stockChangeData)
+          calculateStockPrice(
+            session.archivedStockChangeData.revenue,
+            session.archivedStockChangeData.profit
+          ).toFixed(2) ===
+            calculateStockPrice(
+              stockChangeData.revenue,
+              stockChangeData.profit
+            ).toFixed(2)
         ) {
           console.log("No change in stock");
           return;
