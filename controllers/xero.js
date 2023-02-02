@@ -22,6 +22,8 @@ const getAccessToken = async (req, res) => {
   // Store the token set in the session
   req.session.tokenSet = tokenSet;
 
+  console.log("Got a new access token");
+
   await xero.setTokenSet(tokenSet);
 
   if (tokenSet.expired()) {

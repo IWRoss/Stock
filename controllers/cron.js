@@ -14,11 +14,18 @@ module.exports = (session) => {
     const task = cron.schedule(
       runTime,
       async () => {
-        if (session.tokenSet.expired()) {
+        console.log("Running cron job");
+
+        const tokenSet = xero.readTokenSet();
+
+        if (tokenSet.expired()) {
+          console.log("Token expired, refreshing");
           await xero.refreshToken();
         }
 
         const stockChangeData = await getProfitAndLoss();
+
+        console.log("Stock prices:", stockChangeData);
 
         // If stockChangeData matches archivedStockChangeData, do nothing
         if (
@@ -26,6 +33,7 @@ module.exports = (session) => {
           JSON.stringify(session.archivedStockChangeData) ===
             JSON.stringify(stockChangeData)
         ) {
+          console.log("No change in stock");
           return;
         }
 
