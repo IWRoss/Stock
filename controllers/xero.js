@@ -1,5 +1,8 @@
 const { XeroClient } = require("xero-node");
 
+const fs = require("fs");
+const path = require("path");
+
 const xero = new XeroClient({
   clientId: process.env.XERO_CLIENT_ID,
   clientSecret: process.env.XERO_CLIENT_SECRET,
@@ -8,6 +11,54 @@ const xero = new XeroClient({
 });
 
 const { cloneDeep } = require("lodash");
+
+/**
+ * Store token set in local file so we can retrieve it if the app crashes
+ */
+const storeTokenSet = (tokenSet) => {
+  const tokenSetCopy = cloneDeep(tokenSet);
+
+  // Write the tokenSetCopy to a file
+  fs.writeFileSync(
+    path.join(__dirname, "../tokenSet.json"),
+    JSON.stringify(tokenSetCopy)
+  );
+
+  console.log("Token set stored");
+};
+
+/**
+ * Get the token set from the local file
+ * @returns {object} tokenSet
+ */
+const getTokenSet = () => {
+  try {
+    const tokenSet = JSON.parse(
+      fs.readFileSync(path.join(__dirname, "../tokenSet.json"))
+    );
+
+    return tokenSet;
+  } catch (error) {
+    console.log("No token set found");
+    return null;
+  }
+};
+
+/**
+ * Authorize Xero from local token
+ */
+const authorizeXero = async () => {
+  const tokenSet = getTokenSet();
+
+  if (!tokenSet) {
+    console.log("No token set found");
+    return;
+  }
+
+  xero.setTokenSet(tokenSet);
+
+  console.log("Xero authorized");
+};
 
 const getAccessToken = async (req, res) => {
   // Get URL params from req
@@ -29,6 +80,8 @@ const getAccessToken = async (req, res) => {
   if (tokenSet.expired()) {
     await xero.refreshToken();
   }
+
+  storeTokenSet(tokenSet);
 
   res.redirect("/");
 
@@ -102,4 +155,4 @@ const getRevenueAndProfit = (report) => {
   };
 };
 
-module.exports = { xero, getAccessToken, getProfitAndLoss };
+module.exports = { xero, getAccessToken, getProfitAndLoss, authorizeXero };

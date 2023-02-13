@@ -41,6 +41,10 @@ server.listen(PORT, function () {
   console.log("listening on port 4000");
 });
 
+const { authorizeXero } = require("./controllers/xero");
+
+authorizeXero();
+
 // Run CRON
 const { runCron } = require("./controllers/cron")(session);
 
