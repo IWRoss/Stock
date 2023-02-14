@@ -19,6 +19,15 @@ router.get(`/${process.env.XERO_TENANT_ID}`, async (req, res) => {
 });
 
 /**
+ * URL for showing the content of stockChangeData.json
+ */
+router.get(`/${process.env.STOCK_SECRET}`, async (req, res) => {
+  const stockChangeData = require("../../stockChangeData.json");
+
+  res.send(stockChangeData);
+});
+
+/**
  *
  */
 router.get("/xero/callback", async (req, res) => {
