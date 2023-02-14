@@ -108,7 +108,9 @@ const getProfitAndLoss = async () => {
       new Date().toISOString().split("T")[0]
     );
 
-    return getRevenueAndProfit(report);
+    const stockChangeData = getRevenueAndProfit(report);
+
+    return stockChangeData;
   } catch (error) {
     console.error(error);
 
@@ -149,10 +151,47 @@ const getRevenueAndProfit = (report) => {
 
   const profitRow = cells.find((row) => row[0]?.value === "Operating Profit");
 
-  return {
+  const stockChangeData = {
     revenue: revenueRow[1]?.value,
     profit: profitRow[1]?.value,
   };
+
+  logRevenueAndProfit(stockChangeData);
+
+  return stockChangeData;
+};
+
+/**
+ *
+ */
+const logRevenueAndProfit = async ({ revenue, profit }) => {
+  // Log to json file
+  try {
+    const newRow = { t: new Date(), r: revenue, p: profit };
+
+    // If file doesn't exist, create it
+    if (!fs.existsSync(path.join(__dirname, "../stockChangeData.json"))) {
+      fs.writeFileSync(
+        path.join(__dirname, "../stockChangeData.json"),
+        JSON.stringify([newRow])
+      );
+
+      return;
+    }
+
+    const data = JSON.parse(
+      fs.readFileSync(path.join(__dirname, "../stockChangeData.json"))
+    );
+
+    data.push(newRow);
+
+    fs.writeFileSync(
+      path.join(__dirname, "../stockChangeData.json"),
+      JSON.stringify(data)
+    );
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 module.exports = { xero, getAccessToken, getProfitAndLoss, authorizeXero };

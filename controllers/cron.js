@@ -1,5 +1,8 @@
 const { calculateStockPrice } = require("../utils");
 
+// fs
+const fs = require("fs");
+
 module.exports = (session) => {
   const cron = require("node-cron");
 
