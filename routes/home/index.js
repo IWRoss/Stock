@@ -1,6 +1,8 @@
 const express = require("express"),
   router = express.Router();
 
+const fs = require("fs");
+
 const { xero, getAccessToken } = require("../../controllers/xero");
 
 router.get("/", async (req, res) => {
@@ -22,7 +24,7 @@ router.get(`/${process.env.XERO_TENANT_ID}`, async (req, res) => {
  * URL for showing the content of stockChangeData.json
  */
 router.get(`/${process.env.STOCK_SECRET}`, async (req, res) => {
-  const stockChangeData = require("../../stockChangeData.json");
+  const stockChangeData = await fs.readFile("../../stockChangeData.json");
 
   res.send(stockChangeData);
 });
