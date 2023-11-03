@@ -12,7 +12,7 @@ module.exports = (session) => {
 
   const runTime = parseInt(process.env.DEBUG_CRON)
     ? "* * * * *"
-    : "0/10 * * * *";
+    : "*/10 * * * *";
 
   const runCron = async () => {
     console.log("Cron job started");
