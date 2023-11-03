@@ -43,4 +43,13 @@ router.get("/xero/callback", async (req, res) => {
   res.send();
 });
 
+/**
+ *
+ */
+router.get("/status", async (req, res) => {
+  let status = await isAuthorized();
+
+  res.send(status);
+});
+
 module.exports = router;

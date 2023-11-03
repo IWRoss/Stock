@@ -10,7 +10,9 @@ module.exports = (session) => {
 
   const { sendStockChangeMessageToSlack } = require("./slack");
 
-  const runTime = parseInt(process.env.DEBUG_CRON) ? "* * * * *" : "0 * * * *";
+  const runTime = parseInt(process.env.DEBUG_CRON)
+    ? "* * * * *"
+    : "0/10 * * * *";
 
   const runCron = async () => {
     console.log("Cron job started");

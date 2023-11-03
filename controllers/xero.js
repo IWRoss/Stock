@@ -194,4 +194,14 @@ const logRevenueAndProfit = async ({ revenue, profit }) => {
   }
 };
 
-module.exports = { xero, getAccessToken, getProfitAndLoss, authorizeXero };
+const isAuthorized = async () => {
+  return (await getProfitAndLoss()) !== false;
+};
+
+module.exports = {
+  xero,
+  getAccessToken,
+  getProfitAndLoss,
+  authorizeXero,
+  isAuthorized,
+};
