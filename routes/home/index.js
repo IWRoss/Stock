@@ -4,7 +4,11 @@ const express = require("express"),
 const fs = require("fs");
 const path = require("path");
 
-const { xero, getAccessToken } = require("../../controllers/xero");
+const {
+  xero,
+  getAccessToken,
+  isAuthorized,
+} = require("../../controllers/xero");
 
 router.get("/", async (req, res) => {
   // Show a welcome message
